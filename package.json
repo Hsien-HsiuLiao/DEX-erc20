@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/Hsien-HsiuLiao/DEX-erc20#readme",
   "dependencies": {
-    "@openzeppelin/contracts": "^3.2.0",
+    "@openzeppelin/contracts": "^3.0.0-beta.0",
     "@openzeppelin/test-helpers": "^0.5.9"
   }
 }
