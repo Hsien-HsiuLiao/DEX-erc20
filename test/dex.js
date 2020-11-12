@@ -16,8 +16,6 @@ contract('Dex', (accounts) => {
   const [DAI, BAT, REP, ZRX] = ['DAI', 'BAT', 'REP', 'ZRX']
     .map(ticker => web3.utils.fromAscii(ticker));
 
-  console.log("REP: ", REP);
-
   beforeEach(async() => {
     ([dai, bat, rep, zrx] = await Promise.all([
       Dai.new(), 
@@ -145,8 +143,6 @@ contract('Dex', (accounts) => {
     );
   
     let buyOrders = await dex.getOrders(REP, SIDE.BUY);
-    console.log(buyOrders);
-
     let sellOrders = await dex.getOrders(REP, SIDE.SELL);
     assert(buyOrders.length === 1);
     assert(buyOrders[0].trader === trader1);
@@ -197,5 +193,69 @@ contract('Dex', (accounts) => {
     assert(buyOrders[1].trader === trader1);
     assert(buyOrders[2].trader === trader2);
     assert(sellOrders.length === 0);
+  });
+
+  it('should NOT create limit order if token balance too low', async () => {
+    await dex.deposit(
+      web3.utils.toWei('99'),
+      REP,
+      {from: trader1}
+    );
+
+    await expectRevert(
+      dex.createLimitOrder(
+        REP,
+        web3.utils.toWei('100'),
+        10,
+        SIDE.SELL,
+        {from: trader1}
+      ),
+      'token balance too low'
+    );
+  });
+
+  it('should NOT create limit order if dai balance too low', async () => {
+    await dex.deposit(
+      web3.utils.toWei('99'),
+      DAI,
+      {from: trader1}
+    );
+
+    await expectRevert(
+      dex.createLimitOrder(
+        REP,
+        web3.utils.toWei('10'),
+        10,
+        SIDE.BUY,
+        {from: trader1}
+      ),
+      'dai balance too low'
+    );
+  });
+
+  it('should NOT create limit order if token is DAI', async () => {
+    await expectRevert(
+      dex.createLimitOrder(
+        DAI,
+        web3.utils.toWei('1000'),
+        10,
+        SIDE.BUY,
+        {from: trader1}
+      ),
+      'cannot trade DAI'
+    );
+  });
+
+  it('should NOT create limit order if token does not not exist', async () => {
+    await expectRevert(
+      dex.createLimitOrder(
+        web3.utils.fromAscii('TOKEN-DOES-NOT-EXIST'),
+        web3.utils.toWei('1000'),
+        10,
+        SIDE.BUY,
+        {from: trader1}
+      ),
+      'this token does not exist'
+    );
   });
 });
