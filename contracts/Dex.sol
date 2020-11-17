@@ -52,7 +52,9 @@ contract Dex {
     constructor() public {
         admin = msg.sender;
     }
-
+    /// @param ticker The name of the token
+    /// @param side Which side of an order (BUY/SELL)
+    /// @return an array of orders for given ticket and side
     function getOrders(
       bytes32 ticker, 
       Side side) 
