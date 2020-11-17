@@ -245,7 +245,7 @@ contract('Dex', (accounts) => {
       'cannot trade DAI'
     );
   });
-
+  
   it('should NOT create limit order if token does not not exist', async () => {
     await expectRevert(
       dex.createLimitOrder(
@@ -258,14 +258,21 @@ contract('Dex', (accounts) => {
       'this token does not exist'
     );
   });
+  //test create market order, 4 unhappy paths, 1 happy path
+  it('should create market order & match against existing limit order', async () => {
+    //test happy path
+    //1 send some token to contract
+    //2 create limit order
+    //3 create market order
+    //4 verify market order matched against limit order
 
-  it('should create market order & match', async () => {
+    //deposit 100 DAI from trader1
     await dex.deposit(
       web3.utils.toWei('100'),
       DAI,
       {from: trader1}
     );
-  
+      //create limit order for REP, buy 10 tokens for price of 10 Wei
     await dex.createLimitOrder(
       REP,
       web3.utils.toWei('10'),
@@ -273,31 +280,35 @@ contract('Dex', (accounts) => {
       SIDE.BUY,
       {from: trader1}
     );
-  
+      //fund trader2 balance with 100 REP so a market order can be created
     await dex.deposit(
       web3.utils.toWei('100'),
       REP,
       {from: trader2}
     );
-  
+      //create market order from trader2 to sell 5 REP tokens
     await dex.createMarketOrder(
       REP,
       web3.utils.toWei('5'),
       SIDE.SELL,
       {from: trader2}
     );
-  
+      //check if market order matched with limit order and balances are correct
     const balances = await Promise.all([
       dex.traderBalances(trader1, DAI),
       dex.traderBalances(trader1, REP),
       dex.traderBalances(trader2, DAI),
       dex.traderBalances(trader2, REP),
     ]);
+    //get orders from BUY side of REP to check if partially filled
     const orders = await dex.getOrders(REP, SIDE.BUY);
     assert(orders.length === 1);
     assert(orders[0].filled = web3.utils.toWei('5'));
+    //trader1 bought 5 tokens at 10 Wei, 100DAI -50DAI
     assert(balances[0].toString() === web3.utils.toWei('50'));
+    //trader1 should now have 5 REP tokens
     assert(balances[1].toString() === web3.utils.toWei('5'));
+    //trader2 gets paid 50 DAI for selling REP
     assert(balances[2].toString() === web3.utils.toWei('50'));
     assert(balances[3].toString() === web3.utils.toWei('95'));
   });
