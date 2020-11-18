@@ -258,7 +258,7 @@ contract('Dex', (accounts) => {
       'this token does not exist'
     );
   });
-  //test create market order, 4 unhappy paths, 1 happy path
+  //test create market order
   it('should create market order & match against existing limit order', async () => {
     //test happy path
     //1 send some token to contract
@@ -312,4 +312,11 @@ contract('Dex', (accounts) => {
     assert(balances[2].toString() === web3.utils.toWei('50'));
     assert(balances[3].toString() === web3.utils.toWei('95'));
   });
+
+  //unhappy paths (4)
+  //should not create market order if token does not exist
+  //should not create market order if token is DAI
+  //should not create market order if token balance too low
+  //should not create market order if DAI balance too low
+
 });
