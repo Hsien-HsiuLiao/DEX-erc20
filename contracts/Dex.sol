@@ -65,6 +65,7 @@ contract Dex {
       return orderBook[ticker][uint(side)];
     }
 
+    /// @return an array of Token struct
     function getTokens() 
       external 
       view 
@@ -79,6 +80,8 @@ contract Dex {
       return _tokens;
     }
     
+    /// @param ticker Name of token to be added
+    /// @param tokenAddress Address of token to be added
     function addToken(
         bytes32 ticker,
         address tokenAddress)
@@ -88,6 +91,8 @@ contract Dex {
         tokenList.push(ticker);
     }
     
+    /// @param amount of token to be deposited
+    /// @param ticker Name of token to be deposited
     function deposit(
         uint amount,
         bytes32 ticker)
