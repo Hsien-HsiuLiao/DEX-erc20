@@ -106,6 +106,8 @@ contract Dex {
         traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker].add(amount);
     }
     
+    /// @param amount how much to withdraw from trader account balance
+    /// @param ticker name of token
     function withdraw(
         uint amount,
         bytes32 ticker)
@@ -119,6 +121,10 @@ contract Dex {
         IERC20(tokens[ticker].tokenAddress).transfer(msg.sender, amount);
     }
     
+    /// @param ticker Name of token for limit order
+    /// @param amount How many tokens to buy or sell
+    /// @param price Token price for order
+    /// @param side Which side (buy or sell)
     function createLimitOrder(
         bytes32 ticker,
         uint amount,
@@ -165,7 +171,9 @@ contract Dex {
         }
         nextOrderId++;
     }
-    
+    /// @param ticker Name of token
+    /// @param amount How many tokens to buy or sell
+    /// @param side What type of order (buy or sell)
     function createMarketOrder(
         bytes32 ticker,
         uint amount,
