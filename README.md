@@ -33,3 +33,6 @@ https://twitter.com/zulhhandyplast/status/1026181801239171072
 If you use 'http://YourContract.new()', the address won't get saved in the build directory.
 
 https://www.trufflesuite.com/docs/truffle/getting-started/interacting-with-your-contracts
+
+### Resources
+https://blog.logrocket.com/the-definitive-guide-to-scss/
