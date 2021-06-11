@@ -34,5 +34,9 @@ If you use 'http://YourContract.new()', the address won't get saved in the build
 
 https://www.trufflesuite.com/docs/truffle/getting-started/interacting-with-your-contracts
 
+### Libraries used:
+
+SafeMath library from OpenZeppelin was used and imported in Dex.sol
+
 ### Resources
 https://blog.logrocket.com/the-definitive-guide-to-scss/
