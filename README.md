@@ -1,4 +1,7 @@
-## Local Testing
+## Summary
+User can create limit or market buy/sell orders for BAT/REP/ZRX mock tokens. Orders will be displayed in All Orders component. If there is a match, trade will be executed and the All Trades component will update the chart and the table for amount/price/date. User will also see My Orders component with their BUY/SELL orders and update when orders are filled. 
+
+## Testing on local machine
 
 `npm install`
 
@@ -8,7 +11,7 @@ To view frontend in browser, first run development blockchain
 
 `migrate --reset`
 
-then,
+then in the project directory in another terminal,
 
 `cd client`
 
