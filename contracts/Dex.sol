@@ -2,7 +2,7 @@ pragma solidity 0.8.0;
 //pragma experimental ABIEncoderV2;
 
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import '@openzeppelin/contracts/math/SafeMath.sol';
+//import '@openzeppelin/contracts/math/SafeMath.sol';
 
 contract Dex {
 
@@ -103,7 +103,7 @@ contract Dex {
             address(this),
             amount
         );
-        traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker].add(amount);
+        traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker] + amount;
     }
     
     /// @param amount how much to withdraw from trader account balance
@@ -117,7 +117,7 @@ contract Dex {
             traderBalances[msg.sender][ticker] >= amount,
             'balance too low'
         ); 
-        traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker].sub(amount);
+        traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker] - amount;
         IERC20(tokens[ticker].tokenAddress).transfer(msg.sender, amount);
     }
     
@@ -140,7 +140,7 @@ contract Dex {
             );
         } else {
             require(
-                traderBalances[msg.sender][DAI] >= amount.mul(price),
+                traderBalances[msg.sender][DAI] >= amount*(price),
                 'dai balance too low'
             );
         }
@@ -193,10 +193,10 @@ contract Dex {
         uint remaining = amount;
         
         while(i < orders.length && remaining > 0) {
-            uint available = orders[i].amount.sub(orders[i].filled);
+            uint available = orders[i].amount - orders[i].filled;
             uint matched = (remaining > available) ? available : remaining;
-            remaining = remaining.sub(matched);
-            orders[i].filled = orders[i].filled.add(matched);
+            remaining = remaining - matched;
+            orders[i].filled = orders[i].filled + matched;
             emit NewTrade(
                 nextTradeId,
                 orders[i].id,
@@ -205,23 +205,24 @@ contract Dex {
                 msg.sender,
                 matched,
                 orders[i].price,
-                now
+                //now
+                block.timestamp 
             );
             if(side == Side.SELL) {
-                traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker].sub(matched);
-                traderBalances[msg.sender][DAI] = traderBalances[msg.sender][DAI].add(matched.mul(orders[i].price));
-                traderBalances[orders[i].trader][ticker] = traderBalances[orders[i].trader][ticker].add(matched);
-                traderBalances[orders[i].trader][DAI] = traderBalances[orders[i].trader][DAI].sub(matched.mul(orders[i].price));
+                traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker] - matched;
+                traderBalances[msg.sender][DAI] = traderBalances[msg.sender][DAI] + matched*(orders[i].price);
+                traderBalances[orders[i].trader][ticker] = traderBalances[orders[i].trader][ticker] + matched;
+                traderBalances[orders[i].trader][DAI] = traderBalances[orders[i].trader][DAI] - matched*(orders[i].price);
             }
             if(side == Side.BUY) {
                 require(
-                    traderBalances[msg.sender][DAI] >= matched.mul(orders[i].price),
+                    traderBalances[msg.sender][DAI] >= matched*(orders[i].price),
                     'dai balance too low'
                 );
-                traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker].add(matched);
-                traderBalances[msg.sender][DAI] = traderBalances[msg.sender][DAI].sub(matched.mul(orders[i].price));
-                traderBalances[orders[i].trader][ticker] = traderBalances[orders[i].trader][ticker].sub(matched);
-                traderBalances[orders[i].trader][DAI] = traderBalances[orders[i].trader][DAI].add(matched.mul(orders[i].price));
+                traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker] + matched;
+                traderBalances[msg.sender][DAI] = traderBalances[msg.sender][DAI] - matched*(orders[i].price);
+                traderBalances[orders[i].trader][ticker] = traderBalances[orders[i].trader][ticker] - matched;
+                traderBalances[orders[i].trader][DAI] = traderBalances[orders[i].trader][DAI] + matched*(orders[i].price);
             }
             nextTradeId++;
             i++;
