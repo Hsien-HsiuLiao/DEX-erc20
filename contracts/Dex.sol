@@ -1,5 +1,5 @@
-pragma solidity 0.6.3;
-pragma experimental ABIEncoderV2;
+pragma solidity 0.8.0;
+//pragma experimental ABIEncoderV2;
 
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/math/SafeMath.sol';
@@ -49,7 +49,7 @@ contract Dex {
         uint date
     );
     
-    constructor() public {
+    constructor() {
         admin = msg.sender;
     }
 
@@ -153,7 +153,8 @@ contract Dex {
             amount,
             0,
             price,
-            now 
+            //now
+            block.timestamp 
         ));
         
         uint i = orders.length > 0 ? orders.length - 1 : 0;
