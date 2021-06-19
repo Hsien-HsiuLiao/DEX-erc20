@@ -103,7 +103,7 @@ contract Dex {
             address(this),
             amount
         );
-        traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker] + amount;
+        traderBalances[msg.sender][ticker] += amount;
     }
     
     /// @param amount how much to withdraw from trader account balance
@@ -117,7 +117,7 @@ contract Dex {
             traderBalances[msg.sender][ticker] >= amount,
             'balance too low'
         ); 
-        traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker] - amount;
+        traderBalances[msg.sender][ticker] -= amount;
         IERC20(tokens[ticker].tokenAddress).transfer(msg.sender, amount);
     }
     
@@ -156,7 +156,7 @@ contract Dex {
             //now
             block.timestamp 
         ));
-        
+        //bubble sort
         uint i = orders.length > 0 ? orders.length - 1 : 0;
         while(i > 0) {
             if(side == Side.BUY && orders[i - 1].price > orders[i].price) {
@@ -209,25 +209,25 @@ contract Dex {
                 block.timestamp 
             );
             if(side == Side.SELL) {
-                traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker] - matched;
-                traderBalances[msg.sender][DAI] = traderBalances[msg.sender][DAI] + matched*(orders[i].price);
-                traderBalances[orders[i].trader][ticker] = traderBalances[orders[i].trader][ticker] + matched;
-                traderBalances[orders[i].trader][DAI] = traderBalances[orders[i].trader][DAI] - matched*(orders[i].price);
+                traderBalances[msg.sender][ticker] -= matched;
+                traderBalances[msg.sender][DAI] += matched*(orders[i].price);
+                traderBalances[orders[i].trader][ticker] += matched;
+                traderBalances[orders[i].trader][DAI] -= matched*(orders[i].price);
             }
             if(side == Side.BUY) {
                 require(
                     traderBalances[msg.sender][DAI] >= matched*(orders[i].price),
                     'dai balance too low'
                 );
-                traderBalances[msg.sender][ticker] = traderBalances[msg.sender][ticker] + matched;
-                traderBalances[msg.sender][DAI] = traderBalances[msg.sender][DAI] - matched*(orders[i].price);
-                traderBalances[orders[i].trader][ticker] = traderBalances[orders[i].trader][ticker] - matched;
-                traderBalances[orders[i].trader][DAI] = traderBalances[orders[i].trader][DAI] + matched*(orders[i].price);
+                traderBalances[msg.sender][ticker] += matched;
+                traderBalances[msg.sender][DAI] -= matched*(orders[i].price);
+                traderBalances[orders[i].trader][ticker] -= matched;
+                traderBalances[orders[i].trader][DAI] += matched*(orders[i].price);
             }
             nextTradeId++;
             i++;
         }
-        
+        //cleanup filled orders
         i = 0;
         while(i < orders.length && orders[i].filled == orders[i].amount) {
             for(uint j = i; j < orders.length - 1; j++ ) {
