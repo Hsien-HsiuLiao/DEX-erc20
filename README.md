@@ -26,7 +26,7 @@ then in the project directory in another terminal,
 
 ### Libraries used:
 
-SafeMath library from OpenZeppelin was used and imported in Dex.sol
+~~SafeMath library from OpenZeppelin was used and imported in Dex.sol~~
 
 ### Resources
 https://blog.logrocket.com/the-definitive-guide-to-scss/
