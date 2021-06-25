@@ -46,6 +46,7 @@ const getContracts = async web3 => {
     deployedNetwork && deployedNetwork.address,
   );
   const tokens = await dex.methods.getTokens().call();
+  //take array of abjects to single object with array.reduce
   const tokenContracts = tokens.reduce((acc, token) => ({
     ...acc,
     [web3.utils.hexToUtf8(token.ticker)]: new web3.eth.Contract(
