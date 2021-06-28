@@ -13,6 +13,7 @@ const SIDE = {
 contract('Dex', (accounts) => {
   let dai, bat, rep, zrx, dex;
   const [trader1, trader2] = [accounts[1], accounts[2]];
+  //define bytes32 representation of each token
   const [DAI, BAT, REP, ZRX] = ['DAI', 'BAT', 'REP', 'ZRX']
     .map(ticker => web3.utils.fromAscii(ticker));
 
