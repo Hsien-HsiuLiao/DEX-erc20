@@ -22,7 +22,6 @@
   "homepage": "https://github.com/Hsien-HsiuLiao/DEX-erc20#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^4.1.0",
-    "@openzeppelin/test-helpers": "^0.5.11",
     "@truffle/hdwallet-provider": "^1.4.0"
   }
 }

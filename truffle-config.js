@@ -32,6 +32,8 @@ const secrets = JSON.parse(
 
 module.exports = {
   /**
+   * https://www.trufflesuite.com/docs/truffle/reference/configuration#networks
+   * 
    * Networks define how you connect to your ethereum client and let you set the
    * defaults web3 uses to send transactions. If you don't specify one truffle
    * will spin up a development blockchain for you on port 9545 when you
@@ -39,6 +41,8 @@ module.exports = {
    * network from the command line, e.g
    *
    * $ truffle test --network <network-name>
+   * or
+   * $ truffle test --network <network-name> --skip-dry-run
    */
 
   networks: {
@@ -48,7 +52,7 @@ module.exports = {
           secrets.privateKeys,
           'https://kovan.infura.io/v3/e8746dd884324d37984f917e061064ee',
           0,
-          3
+          4
         ), 
         network_id: 42
     },

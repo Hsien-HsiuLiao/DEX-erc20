@@ -11,9 +11,8 @@ const SIDE = {
   BUY: 0,
   SELL: 1
 };
-
+//https://www.trufflesuite.com/docs/truffle/getting-started/running-migrations
 module.exports = async function(deployer, _network, accounts) {
-  const [trader1, trader2, trader3, trader4, _] = accounts;
   await Promise.all(
     [Dai, Bat, Rep, Zrx, Dex].map(contract => deployer.deploy(contract))
   );
@@ -27,7 +26,14 @@ module.exports = async function(deployer, _network, accounts) {
     dex.addToken(REP, rep.address),
     dex.addToken(ZRX, zrx.address)
   ]);
+  
+  
+  const [trader1, trader2, trader3, trader4, _] = accounts;
 
+  
+
+
+//seed token balance
   const amount = web3.utils.toWei('1000');
   const seedTokenBalance = async (token, trader) => {
     await token.faucet(trader, amount)
@@ -63,7 +69,10 @@ module.exports = async function(deployer, _network, accounts) {
       token => seedTokenBalance(token, trader4) 
     )
   );
+//end seed token balance
+if (_network == 'development'){
 
+//seed orders
    const increaseTime = async (seconds) => {
      await web3.currentProvider.send({
        jsonrpc: '2.0',
@@ -108,6 +117,7 @@ module.exports = async function(deployer, _network, accounts) {
   await dex.createMarketOrder(REP, 1200, SIDE.SELL, {from: trader2});
 
   //create orders
+  
   await Promise.all([
     dex.createLimitOrder(BAT, 1400, 10, SIDE.BUY, {from: trader1}),
     dex.createLimitOrder(BAT, 1200, 11, SIDE.BUY, {from: trader2}),
@@ -133,4 +143,7 @@ module.exports = async function(deployer, _network, accounts) {
     dex.createLimitOrder(ZRX, 1200, 22, SIDE.SELL, {from: trader3}),
     dex.createLimitOrder(ZRX, 900, 21, SIDE.SELL, {from: trader4}),
   ]);
+  
 };
+
+}

@@ -30,3 +30,9 @@ then in the project directory in another terminal,
 
 ### Resources
 https://blog.logrocket.com/the-definitive-guide-to-scss/
+
+### deployment
+https://dex-erc20-131e89.netlify.app/
+
+trader4
+0xfF1B6955c7A5ab86e99f237356b200DA518516a2
